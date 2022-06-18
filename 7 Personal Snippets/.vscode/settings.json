@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "vector": "cpp",
+        "xstring": "cpp",
+        "string": "cpp",
+        "cmath": "cpp",
+        "map": "cpp",
+        "ostream": "cpp",
+        "iostream": "cpp",
+        "utility": "cpp",
+        "xtree": "cpp",
+        "PHistGen.C": "cpp"
+    }
+}
