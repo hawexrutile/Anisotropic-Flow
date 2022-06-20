@@ -7,10 +7,10 @@
 #include <map>
 #include <algorithm>         //for sorting
 #include <process.h>
-#include <limits>
-                                                     //TODO Fix first line of ampt.dat file
+#include <limits>            //for using inf;didt workout though
+
 using namespace std;
-    vector<int> listid;                             //*outside cuz need to call em later for ither functions
+    vector<int> listid;                                     //*outside cuz need to call em later for ither functions
     vector<double> listpx;
     vector<double> listpy;
     vector<double> listpz;
@@ -18,7 +18,7 @@ using namespace std;
     vector<double> listeta;
     vector<double> listphi;
 
-void extractor(string datfilename){                 //*ANCHOR Extractor can be used to extract individual colums from a ampt dat file to respective txt files.
+void extractor(string datfilename){                         //*ANCHOR Extractor can be used to extract individual colums from a ampt dat file to respective txt files.
     double sum = 0;
     string x;
     ifstream inFile;        //initialises write objects
@@ -163,7 +163,7 @@ ostream& operator<<(ostream& os,       //TODO (I deleteed cout for reading vecto
 }
 */
 
-map<int,int> pcounter(vector<int> idlist){          //*ANCHOR pcounter for counting particle and maps them to the respective id's
+map<int,int> pcounter(vector<int> idlist){                  //*ANCHOR for counting particle and maps them to the respective id's
     map<int, int> idmap;
     vector<int> sortedid=idlist;                    //initialized here, but sorted later
     int first;
@@ -187,11 +187,12 @@ map<int,int> pcounter(vector<int> idlist){          //*ANCHOR pcounter for count
 //}
 
 
+
+
 int main(){
     int sum;
 //    extractor("ampt.dat");
-//    idlister("ampt.dat",111);
-    lister("ampt.dat",2122);
+    lister("ampt.dat",111);
     // map<int,int> lol=pcounter(listid);
     // cout << "\nKEY   ELEMENT\n";
     // for(auto x: lol){
@@ -200,10 +201,10 @@ int main(){
     // };
     // cout<<"no of elems:\t"<< sum<<"\n";
     // return 0;    
-    // for (double i : listeta){
-    //     cout<< i <<"\n";
-    // }
-}
+    //  for (double i : listphi){
+    //      cout<< i <<"\t";
+    //  }
+};
 
 
 
