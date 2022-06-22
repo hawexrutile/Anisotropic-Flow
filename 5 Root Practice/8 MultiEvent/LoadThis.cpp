@@ -62,7 +62,12 @@ void extractor(string datfilename){                         //*ANCHOR Extractor 
         dpz=  stod(pz);   
         dpt=  sqrt(stod(px) * stod(px) + stod(py) * stod(py));   
         dphi=  0.5 * log(abs((stod(m)+stod(pz))/(stod(m)-stod(pz))));   
+
+        if (abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))!=0 &&
+            to_string(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))))!="inf"){
             deta= log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz)))));
+            ofeta << deta << "\n";   
+        }
 /*        if (abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))==0){
             eta=  -1 * numeric_limits<double>::infinity();
         }
@@ -98,49 +103,62 @@ void lister(string datfilename,int pid){                    //*ANCHOR Lister is 
         cout << "Unable to open file";
         exit(1);                           //! terminate with error
     }
-    
+    int n=0;
+    int i=0;
     while (getline(inFile, x)) { 
+        string eventno; string testno; string trailno; string b; string Npart1; string Npart2; string Npart1_el; string Npart1_inel; string Npart2_el; string Npart2_inel;
 
-        istringstream ss(x);               //storing string in a "istringstream" object called ss
-        string id;
-        string m;
-        string px;string py;string pz;
-        string x;string y;string z;string pt;
-        string eta;string phi;string t;
+        istringstream ss(x); //storing string in a "istringstream" object called ss              
+        string id; string m; string px;string py;string pz; string x;string y;string z;string pt; string eta;string phi;string t;
         
-        ss >> id;                         //String till first white space is witten in the first row of the respective txt file
-        ss >> px;                         //String from first whire space till second white space
-        ss >> py;                         //likewise
-        ss >> pz;                         //Kochirakoso
-        ss >> m;
-        ss >> x;
-        ss >> y;
-        ss >> z;
-        ss >> t;
-        if (pid==99){
-            if (abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))!=0 && 
-            to_string(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))))!="inf"){
-            listeta.push_back(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))) );   
-            }   
-            listid.push_back(stoi(id));
-            listpx.push_back(stod(px));           //Converting string to double
-            listpy.push_back(stod(py) );           //phi here is rapidity
-            listpz.push_back(stod(pz) );   
-            listpt.push_back(sqrt(stod(px) * stod(px) + stod(py) * stod(py)) );   
-            listphi.push_back(0.5 * log(abs((stod(m)+stod(pz))/(stod(m)-stod(pz)))) );    
-        }
-        else if  (stoi(id)==pid){
-            listid.push_back(stoi(id));
-            listpx.push_back(stod(px));           //Converting string to double
-            listpy.push_back(stod(py) );           //phi here is rapidity
-            listpz.push_back(stod(pz) );   
-            listpt.push_back(sqrt(stod(px) * stod(px) + stod(py) * stod(py)) );   
-            listphi.push_back(0.5 * log(abs((stod(m)+stod(pz))/(stod(m)-stod(pz)))) );   
-            listeta.push_back(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))) );   
-        };   
-    };
-};
+        
+        if (n==i){
+            ss>> eventno;
+            ss>> testno;
+            ss>>trailno;
+            i=i+stoi(trailno);
 
+        }
+        else {
+            ss >> id;                         //String till first white space is witten in the first row of the respective txt file
+            ss >> px;                         //String from first white space till second white space
+            ss >> py;                         //likewise
+            ss >> pz;                         //Kochirakoso
+            ss >> m;
+            ss >> x;
+            ss >> y;
+            ss >> z;
+            ss >> t;
+            if (pid==99){
+                if (abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))!=0 && 
+                to_string(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))))!="inf"){
+                listeta.push_back(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))) );   
+                }   
+                listid.push_back(stoi(id));
+                listpx.push_back(stod(px));           //Converting string to double
+                listpy.push_back(stod(py) );           //phi here is rapidity
+                listpz.push_back(stod(pz) );   
+                listpt.push_back(sqrt(stod(px) * stod(px) + stod(py) * stod(py)) );   
+                listphi.push_back(0.5 * log(abs((stod(m)+stod(pz))/(stod(m)-stod(pz)))) );    
+            n++;
+            }
+            else if  (stoi(id)==pid){
+                listid.push_back(stoi(id));
+                listpx.push_back(stod(px));           //Converting string to double
+                listpy.push_back(stod(py) );           //phi here is rapidity
+                listpz.push_back(stod(pz) );   
+                listpt.push_back(sqrt(stod(px) * stod(px) + stod(py) * stod(py)) );   
+                listphi.push_back(0.5 * log(abs((stod(m)+stod(pz))/(stod(m)-stod(pz)))) );   
+                if (abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))!=0 && 
+                    to_string(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))))!="inf"){
+                    listeta.push_back(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))) );   
+                };
+            n++;   
+            };    
+        };
+        
+    };
+}
 
 /*
 template <typename S>                  //!without this cout wont be able to list vectors
@@ -180,10 +198,12 @@ map<int,int> pcounter(vector<int> idlist){                  //*ANCHOR for counti
 //}
 
 
+
+
 int main(){
     int sum;
-    extractor("ampt.dat");
-    // lister("ampt.dat",111);
+//    extractor("ampt.dat");
+    lister("ampt.dat",99);
     // map<int,int> lol=pcounter(listid);
     // cout << "\nKEY   ELEMENT\n";
     // for(auto x: lol){
@@ -191,10 +211,12 @@ int main(){
     // sum=sum+x.second;
     // };
     // cout<<"no of elems:\t"<< sum<<"\n";
-    // return 0;    
-    //  for (double i : listphi){
-    //      cout<< i <<"\t";
-    //  }
+    // return 0;
+    int g=0;    
+     for (double l : listphi){
+        g++;
+     }
+     cout<< g <<"\t";
 };
 
 
