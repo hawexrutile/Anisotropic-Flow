@@ -1,0 +1,36 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"cratiot.C": "cpp",
+			"multiplicity.C": "cpp",
+			"ostream": "cpp",
+			"utility": "cpp",
+			"xtree": "cpp",
+			"vector": "cpp",
+			"iosfwd": "cpp",
+			"iostream": "cpp",
+			"string": "cpp",
+			"xstring": "cpp",
+			"PHistGen.C": "cpp",
+			"RapidityHistGen.C": "cpp",
+			"cmath": "cpp",
+			"cstdlib": "cpp",
+			"RPTMHistGen.C": "cpp",
+			"demos.C": "cpp",
+			"th1d.h": "c",
+			"1.1 SimplePlot.C": "cpp",
+			"1.2 PartionPlot .C": "cpp",
+			"1.3 Contour Plots.C": "cpp",
+			"2.1Graph.C": "cpp",
+			"2.2 SetPoint.C": "cpp",
+			"2.3 RNG.C": "cpp",
+			"3.1 Fitting.C": "cpp",
+			"ptvsrap.C": "cpp"
+		}
+	}
+}
