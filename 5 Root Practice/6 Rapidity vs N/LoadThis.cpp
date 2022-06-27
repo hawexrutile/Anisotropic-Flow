@@ -11,11 +11,13 @@
 
 using namespace std;
     vector<int> listid;                                     //*outside cuz need to call em later for ither functions
+    vector<int> listtrail;
     vector<double> listpx;
-    vector<double> listpy;
+    vector<double> listpy;  
     vector<double> listpz;
     vector<double> listpt;
     vector<double> listeta;
+    vector<double> listyi;
     vector<double> listphi;
 
 void extractor(string datfilename){                         //*ANCHOR Extractor can be used to extract individual colums from a ampt dat file to respective txt files.
@@ -27,6 +29,7 @@ void extractor(string datfilename){                         //*ANCHOR Extractor 
     ofstream ofpz;
     ofstream ofpt;
     ofstream ofeta;
+    ofstream ofyi;
     ofstream ofphi;
     
     
@@ -36,7 +39,8 @@ void extractor(string datfilename){                         //*ANCHOR Extractor 
     ofpz.open("ofpz.txt");   
     ofpt.open("ofpt.txt");   
     ofeta.open("ofeta.txt");   
-    ofphi.open("ofphi.txt");   
+    ofyi.open("ofyi.txt");   
+    ofyi.open("ofphi.txt");   
                              //fstream is used here to save the dat file into its object called InFile
     if (!inFile) {           
         cout << "Unable to open file";
@@ -45,8 +49,8 @@ void extractor(string datfilename){                         //*ANCHOR Extractor 
     
     while (getline(inFile, x)) {    
         istringstream ss(x);               //storing string in a "istringstream" object called ss
-        string id;string px;string py;string pz;string m;string x;string y;string z;string pt;string eta;string phi;string t;
-        int iid;double dpx;double dpy;double dpz;double dm;double dx;double dy;double dz;double dpt;double deta;double dphi;double dt;
+        string id;string px;string py;string pz;string m;string x;string y;string z;string t;
+        int iid;double dpx;double dpy;double dpz;double dm;double dx;double dy;double dz;double dpt;double deta;double dyi;double dt;double dphi;
         ss >> id;                         //String till first white space is witten in the first row of the respective txt file
         ss >> px;                         //String from first whire space till second white space
         ss >> py;                         //likewise
@@ -58,11 +62,11 @@ void extractor(string datfilename){                         //*ANCHOR Extractor 
         ss >> t;
 
         dpx= stod(px);           //Converting string to double
-        dpy= stod(py);           //phi here is rapidity
+        dpy= stod(py);           //yi here is rapidity
         dpz=  stod(pz);   
         dpt=  sqrt(stod(px) * stod(px) + stod(py) * stod(py));   
-        dphi=  0.5 * log(abs((stod(m)+stod(pz))/(stod(m)-stod(pz))));   
-
+        dyi=(0.5 * log(abs((sqrt(pow(stod(px),2)+pow(stod(py),2)+pow(stod(pz),2)+pow(stod(m),2))+stod(pz))/(sqrt(pow(stod(px),2)+pow(stod(py),2)+pow(stod(pz),2)+pow(stod(m),2))-stod(pz)))));    
+        dphi=(atan(stod(pz)/sqrt(pow(stod(px),2)+pow(stod(py),2))));
         if (abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))!=0 &&
             to_string(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))))!="inf"){
             deta= log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz)))));
@@ -76,10 +80,11 @@ void extractor(string datfilename){                         //*ANCHOR Extractor 
         }
 */ //?i TRIED TO TAKE CARE OF INF" BUT IT DINT WORK PLAS LOOK INTO IT
         ofpx << dpx << "\n";           //Converting string to double
-        ofpy << dpy << "\n";           //phi here is rapidity
+        ofpy << dpy << "\n";           //yi here is rapidity
         ofpz << dpz << "\n";   
         ofpt << dpt << "\n";   
-        ofphi << dphi << "\n";   
+        ofyi << dyi << "\n";
+        ofphi<< dphi<< "\n";   
         
     }
     
@@ -89,13 +94,14 @@ void extractor(string datfilename){                         //*ANCHOR Extractor 
     ofpz.close();
     ofpt.close();
     ofeta.close();
+    ofyi.close();
     ofphi.close();
 }
 
 void lister(string datfilename,int pid){                    //*ANCHOR Lister is used to get vector output of all the observables and ID 
     double sum = 0;                                         //TODO give pid default of 99 if no input
     string x;                                               //! pid is 99 for all particles and respective pid for others
-    ifstream inFile;        //initialises write objects
+    ifstream inFile;        //initialises write objects     //*Create 2d list ofr each event
 
     
     inFile.open(datfilename);
@@ -103,65 +109,67 @@ void lister(string datfilename,int pid){                    //*ANCHOR Lister is 
         cout << "Unable to open file";
         exit(1);                           //! terminate with error
     }
-    
+    int n=0; 
+    int i=0;
+    listtrail.push_back(0);              //!imp, so that list start with a 0 like {0,7280,16432.....}
     while (getline(inFile, x)) { 
+        string eventno; string testno; string trailno; string b; string Npart1; string Npart2; string Npart1_el; string Npart1_inel; string Npart2_el; string Npart2_inel;
 
-        istringstream ss(x);               //storing string in a "istringstream" object called ss
-        string id;
-        string m;
-        string px;string py;string pz;
-        string x;string y;string z;string pt;
-        string eta;string phi;string t;
+        istringstream ss(x); //storing string in a "istringstream" object called ss              
+        string id; string m; string px;string py;string pz; string x;string y;string z;string t;
         
-        ss >> id;                         //String till first white space is witten in the first row of the respective txt file
-        ss >> px;                         //String from first whire space till second white space
-        ss >> py;                         //likewise
-        ss >> pz;                         //Kochirakoso
-        ss >> m;
-        ss >> x;
-        ss >> y;
-        ss >> z;
-        ss >> t;
-        if (pid==99){
-            if (abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))!=0 && 
-            to_string(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))))!="inf"){
-            listeta.push_back(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))) );   
-            }   
-            listid.push_back(stoi(id));
-            listpx.push_back(stod(px));           //Converting string to double
-            listpy.push_back(stod(py) );           //phi here is rapidity
-            listpz.push_back(stod(pz) );   
-            listpt.push_back(sqrt(stod(px) * stod(px) + stod(py) * stod(py)) );   
-            listphi.push_back(0.5 * log(abs((stod(m)+stod(pz))/(stod(m)-stod(pz)))) );    
+        
+        if (n==i){                          // To remove the first line of each multiplicity in ampt.dat file
+            ss>> eventno;                   //we only need event# rest are for fun
+            ss>> testno;                    //This "if block" makes lister skip over that particular line 
+            ss>>trailno;
+            i=i+stoi(trailno);              //i is used in the if statement to read the header of each event
+            listtrail.push_back(i);
+
         }
-        else if  (stoi(id)==pid){
-            listid.push_back(stoi(id));
-            listpx.push_back(stod(px));           //Converting string to double
-            listpy.push_back(stod(py) );           //phi here is rapidity
-            listpz.push_back(stod(pz) );   
-            listpt.push_back(sqrt(stod(px) * stod(px) + stod(py) * stod(py)) );   
-            listphi.push_back(0.5 * log(abs((stod(m)+stod(pz))/(stod(m)-stod(pz)))) );   
-            if (abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))!=0 && 
+        else {
+            ss >> id;                         //String till first white space is witten in the first row of the respective txt file
+            ss >> px;                         //String from first white space till second white space
+            ss >> py;                         //likewise
+            ss >> pz;                         //Kochirakoso
+            ss >> m;
+            ss >> x;
+            ss >> y;
+            ss >> z;
+            ss >> t;
+            if (pid==99){
+                if (abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))!=0 && 
                 to_string(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))))!="inf"){
                 listeta.push_back(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))) );   
-            };   
+                };   
+                listid.push_back(stoi(id));
+                listpx.push_back(stod(px));            //Converting string to double
+                listpy.push_back(stod(py) );           //yi here is rapidity
+                listpz.push_back(stod(pz) );   
+                listphi.push_back(atan(stod(pz)/sqrt(pow(stod(px),2)+pow(stod(py),2))));
+                listpt.push_back(sqrt(stod(px) * stod(px) + stod(py) * stod(py)) );   
+                listyi.push_back(0.5 * log(abs((sqrt(pow(stod(px),2)+pow(stod(py),2)+pow(stod(pz),2)+pow(stod(m),2))+stod(pz))/(sqrt(pow(stod(px),2)+pow(stod(py),2)+pow(stod(pz),2)+pow(stod(m),2))-stod(pz)))));    
+            n++;
+            }
+            else if  (stoi(id)==pid){
+                listid.push_back(stoi(id));
+                listpx.push_back(stod(px));           //Converting string to double
+                listpy.push_back(stod(py) );           //yi here is rapidity
+                listpz.push_back(stod(pz) );   
+                listpt.push_back(sqrt(pow(stod(px),2)+pow(stod(py),2)));   
+                listphi.push_back(atan(stod(pz)/sqrt(pow(stod(px),2)+pow(stod(py),2))));
+                listyi.push_back(0.5 * log(abs((sqrt(pow(stod(px),2)+pow(stod(py),2)+pow(stod(pz),2)+pow(stod(m),2))+stod(pz))/(sqrt(pow(stod(px),2)+pow(stod(py),2)+pow(stod(pz),2)+pow(stod(m),2))-stod(pz)))));    
+                if (abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))!=0 && 
+                    to_string(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))))!="inf"){
+                    listeta.push_back(log(abs((stod(px)+stod(py))/(stod(px)+stod(py)+(2*stod(pz))))) );   
+                };
+            n++;   
+            };    
         };
+        
     };
 }
 
-/*
-template <typename S>                  //!without this cout wont be able to list vectors
-ostream& operator<<(ostream& os,       //TODO (I deleteed cout for reading vectors) by mistake, remake it
-                    const vector<S>& vector)
-{
-    // Printing all the elements
-    // using <<
-    for (auto element : vector) {
-        os << element << " ";
-    }
-    return os;
-}
-*/
 
 map<int,int> pcounter(vector<int> idlist){                  //*ANCHOR for counting particle and maps them to the respective id's
     map<int, int> idmap;
@@ -182,29 +190,25 @@ map<int,int> pcounter(vector<int> idlist){                  //*ANCHOR for counti
     return idmap;        
 };
 
-//void amptrun(){                   //!Complete it
-//    _execl("C:\\Windows\\System32\\wsl.exe")
-//}
 
-
-
-
-int main(){
-    int sum;
-//    extractor("ampt.dat");
-    lister("ampt.dat",111);
-    // map<int,int> lol=pcounter(listid);
-    // cout << "\nKEY   ELEMENT\n";
-    // for(auto x: lol){
-	// cout << x.first << "-->" <<x.second <<endl;
-    // sum=sum+x.second;
-    // };
-    // cout<<"no of elems:\t"<< sum<<"\n";
-    // return 0;    
-    //  for (double i : listphi){
-    //      cout<< i <<"\t";
-    //  }
-};
+// int main(){
+//     int sum;
+// //    extractor("ampt.dat");
+//     lister("ampt.dat",99);
+//     // map<int,int> lol=pcounter(listid);
+//     // cout << "\nKEY   ELEMENT\n";
+//     // for(auto x: lol){
+// 	// cout << x.first << "-->" <<x.second <<endl;
+//     // sum=sum+x.second;
+//     // };
+//     // cout<<"no of elems:\t"<< sum<<"\n";
+//     // return 0;
+//     int g=0;    
+//      for (double l : listyi){
+//         g++;
+//      }
+//      cout<< g <<"\t";
+// };
 
 
 

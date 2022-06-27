@@ -1,0 +1,7 @@
+#non essential folder
+.vscode/
+
+#c++ .exe file
+.exe
+
+.txt
