@@ -1,9 +1,0 @@
-{
-    "files.associations": {
-        "cratiot.C": "cpp",
-        "multiplicity.C": "cpp",
-        "ostream": "cpp",
-        "utility": "cpp",
-        "xtree": "cpp"
-    }
-}

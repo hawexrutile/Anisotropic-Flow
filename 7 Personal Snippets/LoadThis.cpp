@@ -193,16 +193,16 @@ map<int,int> pcounter(vector<int> idlist){                  //*ANCHOR for counti
 
 // int main(){
 //     int sum;
-// //    extractor("ampt.dat");
-//     lister("ampt.dat",99);
-//     // map<int,int> lol=pcounter(listid);
-//     // cout << "\nKEY   ELEMENT\n";
-//     // for(auto x: lol){
-// 	// cout << x.first << "-->" <<x.second <<endl;
-//     // sum=sum+x.second;
-//     // };
-//     // cout<<"no of elems:\t"<< sum<<"\n";
-//     // return 0;
+//    extractor("ampt.dat");
+    //  lister("ampt.dat",99);
+    // map<int,int> lol=pcounter(listid);
+    // cout << "\nKEY   ELEMENT\n";
+    // for(auto x: lol){
+	// cout << x.first << "-->" <<x.second <<endl;
+    // sum=sum+x.second;
+    // };
+    // cout<<"no of elems:\t"<< sum<<"\n";
+    // return 0;
 //     int g=0;    
 //      for (double l : listyi){
 //         g++;
