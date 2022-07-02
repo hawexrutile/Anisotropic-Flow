@@ -191,7 +191,7 @@ map<int,int> pcounter(vector<int> idlist){                  //*ANCHOR for counti
 };
 
 
-// int main(){
+int main(){
 //     int sum;
 // //    extractor("ampt.dat");
 //     lister("ampt.dat",99);
@@ -208,7 +208,7 @@ map<int,int> pcounter(vector<int> idlist){                  //*ANCHOR for counti
 //         g++;
 //      }
 //      cout<< g <<"\t";
-// };
+};
 
 
 
