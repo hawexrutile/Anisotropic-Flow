@@ -2,8 +2,8 @@
 .vscode/
 
 #c++ executable file
-.exe
+*.exe
 
-.txt
+*.txt
 
-.ini
+*.ini
