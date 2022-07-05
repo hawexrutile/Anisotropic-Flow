@@ -6,17 +6,15 @@
     TH1D *pion= new TH1D("pion","Pion Multiplicity",10,3200,4000);
     TH1D *photon= new TH1D("photon","Photon Multiplicity",8,300,500);
 
-    while(int (j<listtrail.size()-1)){
-        vector<int> temp={};
+    while(int (j<listtrail.size()-1)){   //used while loop instead of "for", cuz i  needed to acces 2 consequitive elemtnts with pointer
+        vector<int> temp={};             //temporarily makes a list of particles in aparticular event
         while ((l>=listtrail[j]) && (l<listtrail[j+1])){
             temp.push_back(listid[l]);
             l++;
         };
         map<int,int> lol=pcounter(temp);    
-        //  cout<<lol.at(111)+lol.at(211)<<"\n";
-        //  cout<<lol.at(22)<<"\n";
-        pion->Fill(lol.at(111)+lol.at(211));
-        photon->Fill(lol.at(22));
+        pion->Fill(lol.at(111)+lol.at(211));//for both pion+ and pion-
+        photon->Fill(lol.at(22));            //for photon
         j++;
     };
     c1->cd(1);
