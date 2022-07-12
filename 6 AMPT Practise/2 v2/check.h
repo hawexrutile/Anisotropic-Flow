@@ -16,111 +16,110 @@
 
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
-class check {
-public :
-   TTree          *fChain;   //!pointer to the analyzed TTree or TChain
-   Int_t           fCurrent; //!current Tree number in a TChain
+class check {                                                                   //*Check Class
+   public :
+      TTree          *fChain;   //!pointer to the analyzed TTree or TChain
+      Int_t           fCurrent; //!current Tree number in a TChain
 
-   // Declaration of leaf types
-   Int_t           Event;
-   Int_t           Mult;
-   Int_t           Npartp;
-   Int_t           Npartt;
-   Int_t           Nesp;
-   Int_t           Ninesp;
-   Int_t           Nest;
-   Int_t           Ninest;
-   Float_t         Imp;
-   Int_t           Na;
-   Int_t           Nb;
-   Int_t           Nab;
-   Float_t         Psi;
-   Float_t         Theta_p;
-   Float_t         Phi_p;
-   Float_t         Theta_t;
-   Float_t         Phi_t;
-   Float_t         Nx[394];   //[Nab]
-   Float_t         Ny[394];   //[Nab]
-   Float_t         Nz[394];   //[Nab]
-   Int_t           Stat[394];   //[Nab]
-   Int_t           PID[8982];   //[Mult]
-   Float_t         Px[8982];   //[Mult]
-   Float_t         Py[8982];   //[Mult]
-   Float_t         Pz[8982];   //[Mult]
-   Float_t         Mass[8982];   //[Mult]
-   Float_t         XX[8982];   //[Mult]
-   Float_t         YY[8982];   //[Mult]
-   Float_t         ZZ[8982];   //[Mult]
-   Float_t         TT[8982];   //[Mult]
-   Int_t           qMult;
-   Int_t           qPID[12916];   //[qMult]
-   Float_t         qPx[12916];   //[qMult]
-   Float_t         qPy[12916];   //[qMult]
-   Float_t         qPz[12916];   //[qMult]
-   Float_t         qMass[12916];   //[qMult]
-   Float_t         qXX[12916];   //[qMult]
-   Float_t         qYY[12916];   //[qMult]
-   Float_t         qZZ[12916];   //[qMult]
-   Float_t         qTT[12916];   //[qMult]
+      // Declaration of leaf types
+      Int_t           Event;
+      Int_t           Mult;
+      Int_t           Npartp;
+      Int_t           Npartt;
+      Int_t           Nesp;
+      Int_t           Ninesp;
+      Int_t           Nest;
+      Int_t           Ninest;
+      Float_t         Imp;
+      Int_t           Na;
+      Int_t           Nb;
+      Int_t           Nab;
+      Float_t         Psi;
+      Float_t         Theta_p;
+      Float_t         Phi_p;
+      Float_t         Theta_t;
+      Float_t         Phi_t;
+      Float_t         Nx[394];   //[Nab]
+      Float_t         Ny[394];   //[Nab]
+      Float_t         Nz[394];   //[Nab]
+      Int_t           Stat[394];   //[Nab]
+      Int_t           PID[8982];   //[Mult]
+      Float_t         Px[8982];   //[Mult]
+      Float_t         Py[8982];   //[Mult]
+      Float_t         Pz[8982];   //[Mult]
+      Float_t         Mass[8982];   //[Mult]
+      Float_t         XX[8982];   //[Mult]
+      Float_t         YY[8982];   //[Mult]
+      Float_t         ZZ[8982];   //[Mult]
+      Float_t         TT[8982];   //[Mult]
+      Int_t           qMult;
+      Int_t           qPID[12916];   //[qMult]
+      Float_t         qPx[12916];   //[qMult]
+      Float_t         qPy[12916];   //[qMult]
+      Float_t         qPz[12916];   //[qMult]
+      Float_t         qMass[12916];   //[qMult]
+      Float_t         qXX[12916];   //[qMult]
+      Float_t         qYY[12916];   //[qMult]
+      Float_t         qZZ[12916];   //[qMult]
+      Float_t         qTT[12916];   //[qMult]
 
-   // List of branches
-   TBranch        *b_Event;   //!
-   TBranch        *b_Mult;   //!
-   TBranch        *b_Npartp;   //!
-   TBranch        *b_Npartt;   //!
-   TBranch        *b_Nesp;   //!
-   TBranch        *b_Ninesp;   //!
-   TBranch        *b_Nest;   //!
-   TBranch        *b_Ninest;   //!
-   TBranch        *b_Imp;   //!
-   TBranch        *b_Na;   //!
-   TBranch        *b_Nb;   //!
-   TBranch        *b_Nab;   //!
-   TBranch        *b_Psi;   //!
-   TBranch        *b_Theta_p;   //!
-   TBranch        *b_Phi_p;   //!
-   TBranch        *b_Theta_t;   //!
-   TBranch        *b_Phi_t;   //!
-   TBranch        *b_Nx;   //!
-   TBranch        *b_Ny;   //!
-   TBranch        *b_Nz;   //!
-   TBranch        *b_Stat;   //!
-   TBranch        *b_PID;   //!
-   TBranch        *b_Px;   //!
-   TBranch        *b_Py;   //!
-   TBranch        *b_Pz;   //!
-   TBranch        *b_Mass;   //!
-   TBranch        *b_XX;   //!
-   TBranch        *b_YY;   //!
-   TBranch        *b_ZZ;   //!
-   TBranch        *b_TT;   //!
-   TBranch        *b_qMult;   //!
-   TBranch        *b_qPID;   //!
-   TBranch        *b_qPx;   //!
-   TBranch        *b_qPy;   //!
-   TBranch        *b_qPz;   //!
-   TBranch        *b_qMass;   //!
-   TBranch        *b_qXX;   //!
-   TBranch        *b_qYY;   //!
-   TBranch        *b_qZZ;   //!
-   TBranch        *b_qTT;   //!
+      // List of branches
+      TBranch        *b_Event;    //!Event
+      TBranch        *b_Mult;     //! multiplicity = tracks
+      TBranch        *b_Npartp;   //!No of Participant on projectile
+      TBranch        *b_Npartt;   //!No of Participant on Target
+      TBranch        *b_Nesp;     //!Elastic
+      TBranch        *b_Ninesp;   //!Inelastic
+      TBranch        *b_Nest;     //!Elastic
+      TBranch        *b_Ninest;   //!Inelastic
+      TBranch        *b_Imp;   //?Mass/impact parameter
+      TBranch        *b_Na;   //!Projectile mass No.
+      TBranch        *b_Nb;   //!Target mass No.
+      TBranch        *b_Nab;   //!Nab = Na+Nb;
+      TBranch        *b_Psi;   //!Event Plane Angle
+      TBranch        *b_Theta_p;   //!projetileTheta
+      TBranch        *b_Phi_p;   //!
+      TBranch        *b_Theta_t;   //!Target Theta
+      TBranch        *b_Phi_t;   //!
+      TBranch        *b_Nx;   //!
+      TBranch        *b_Ny;   //!
+      TBranch        *b_Nz;   //!
+      TBranch        *b_Stat;   //!
+      TBranch        *b_PID;   //!Particle ID
+      TBranch        *b_Px;   //!Momentum in x direction for particle i
+      TBranch        *b_Py;   //!
+      TBranch        *b_Pz;   //!
+      TBranch        *b_Mass;   //!Mass of ith particle
+      TBranch        *b_XX;   //!Position in x direction for particle i
+      TBranch        *b_YY;   //!
+      TBranch        *b_ZZ;   //!
+      TBranch        *b_TT;   //!Time
+      TBranch        *b_qMult;   //!
+      TBranch        *b_qPID;   //!
+      TBranch        *b_qPx;   //!
+      TBranch        *b_qPy;   //!
+      TBranch        *b_qPz;   //!
+      TBranch        *b_qMass;   //!
+      TBranch        *b_qXX;   //!
+      TBranch        *b_qYY;   //!
+      TBranch        *b_qZZ;   //!
+      TBranch        *b_qTT;   //!
 
-   check(TTree *tree=0);
-   virtual ~check();
-   virtual Int_t    Cut(Long64_t entry);
-   virtual Int_t    GetEntry(Long64_t entry);
-   virtual Long64_t LoadTree(Long64_t entry);
-   virtual void     Init(TTree *tree);
-   virtual void     Loop();
-   virtual Bool_t   Notify();
-   virtual void     Show(Long64_t entry = -1);
+      check(TTree *tree=0);                   //?IG this works like __init__ in python   ...for definign the drguments
+      virtual ~check();
+      virtual Int_t    Cut(Long64_t entry);
+      virtual Int_t    GetEntry(Long64_t entry);
+      virtual Long64_t LoadTree(Long64_t entry);
+      virtual void     Init(TTree *tree);
+      virtual void     Loop();
+      virtual Bool_t   Notify();
+      virtual void     Show(Long64_t entry = -1);
 };
 
 #endif
 
 #ifdef check_cxx
-check::check(TTree *tree) : fChain(0) 
-{
+check::check(TTree *tree) : fChain(0) {
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
@@ -134,21 +133,18 @@ check::check(TTree *tree) : fChain(0)
    Init(tree);
 }
 
-check::~check()
-{
-   if (!fChain) return;
+check::~check(){                 //~ implies distructor
+   if (!fChain) return;                 //fchain is tree/chain
    delete fChain->GetCurrentFile();
 }
 
-Int_t check::GetEntry(Long64_t entry)
-{
-// Read contents of entry.
+Int_t check::GetEntry(Long64_t entry){              //*Long 64 for huge int values 
+                                       // Read contents of entry.
    if (!fChain) return 0;
    return fChain->GetEntry(entry);
 }
-Long64_t check::LoadTree(Long64_t entry)
-{
-// Set the environment to read one entry
+Long64_t check::LoadTree(Long64_t entry){
+                                          // Set the environment to read one entry
    if (!fChain) return -5;
    Long64_t centry = fChain->LoadTree(entry);
    if (centry < 0) return centry;
