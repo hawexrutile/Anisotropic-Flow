@@ -1,4 +1,5 @@
 #non essential folder; "/" implies "in each subfolder"  
+Ampt-v1.26t9b-v2.26t9b/
 .vscode/
 
 #c++ executable file "*-wild card" implies for all file names ending with exe
@@ -7,4 +8,3 @@
 *.txt
 
 *.ini
-*/*.ini
