@@ -9,113 +9,193 @@
 #include <TMath.h>
 #include <iostream>
 #include <TStopwatch.h>
+#include <TProfile.h>
+#include <cmath>
+
 
 //?Why are theri two similar trees in root file?
 using namespace std;
+int MultBin=50;                  //Multiplicity Bin...   Total no of bins in the centrality distribution plot
+const int N=8;
+double lowcentral[N]={0.0};
+double highcentral[N]={0.0};         //Global variable to be used i both functions
 
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ien
-void check::Loop(){
-   double binarray[BINpls];                    //! total no of bins has to be set here(dont use the bin as a variable cuz its an array instead use as a macro)
-   double v2array[BINpls];                     //! same here
+void check::Loop(double lowerbc, double higherbc){
 
    if (fChain == 0) return;
    fChain->SetBranchAddress("Px",&Px);
-   fChain->SetBranchAddress("Py",&Py);
-
+   fChain->SetBranchAddress("Py",&Py);//?wHY DIISNT WE DO THIS FOR  PID
    Long64_t nentries = fChain->GetEntriesFast();
+   Long64_t nbytes = 0, nb = 0;
+   TCanvas *canva = new TCanvas("canva","Pt vs v2 and v3 for Proton, Pion and Kaon",1000,1000);
 
+   //########################################################################
+   //########################################################################
    
 
-   // int BINpls=10;                                                //set BIN value here; the number of points you want to plot
-   double bw=5/(1.0*BINpls);                               //I subbed (Total width of plot) with 5 cuz it was 5 for my prev plot and other plots I saw online
-   int i=0;
-   double Bmin=0;
-   double Bmax=0;
+   
+   //###########################################################################
+   //###########################################################################
 
-   while (i<BINpls){               //for each pt-BIN we run the loop on all the trails
-   TStopwatch time;
-   cout<<((i*1.0)/BINpls) *100 <<"% complete \n";
-      double v2=0;
-      double sum=0;
-      int j=0;
-      int lpos1=0;             //looping int fot calculationg Psi
-      int lpos2=0;             //looping int for calculating tot
-      int Tot=0;               //Variable to calculate v2
-      Bmin=i*(bw);
-      Bmax=(i+1)*(bw);
-      double bc=((2.0*i+1.0)/2.0)*bw;    //BIN centre; converting to double is imp as otherwise it doesnt give the proper bin centre
-      Long64_t nbytes = 0, nb = 0;
-      for (Long64_t jentry=0; jentry<nentries-60000;jentry++) { //Tot events=67295
-         // cout<<"event loop started \n";
+   // int canvasno=8;                                        //tOTAL nO OF plots
+   // string canvaplotlist[8]={"g1","g2","g3","g4","g5","g6","g7","g8"};                 //List of plot ID's to use in giving plots positions
+   // TCanvas * twntypcs=TCanvas("twntypcs","Twenty Pieces",1000,1000) ;                //To make 10 plots //?No idea why the error squigle fix it;
+   // twntypcs->Divide(5,2);
+
+   // for (int l;l<N;l++){                                       //For each Centrality Region
+
+
+      canva->Divide(1,1);
+      canva->cd(1);
+      TProfile *g2 =new TProfile("g2", "Pt vs v2 ",BINpls,0,5);
+      TProfile *g1 =new TProfile("g2", "Pt vs v3",BINpls,0,5);
+      int TotEvents=nentries;// *TotEvents is for easy adjustament of event size 
+      for (Long64_t jentry=0; jentry<TotEvents;jentry++) { //Total events=67295
          Long64_t ientry = LoadTree(jentry);                  //Load Tree apparently gives back the the respective possition in the tree
          if (ientry < 0) break;
-         nb = fChain->GetEntry(jentry);   nbytes += nb;
+         nb = fChain->GetEntry(jentry);   nbytes += nb;       //!Loads all the variables(branches) of the ith leaf
          // if (Cut(ientry) < 0) continue;
          double pt;
          double phi;
-         double SinSum=0;                                         //?Is the Psi defined by check.h actualy event plane?...yeah!!but ampt normaly keeps it 0 for this root file
-         double CosSum=0;
-         for (int p =0;p < Mult ;p++){   //This while loop is to calculate Psi. Here listtrail is a list of no events in each trail
-            // pt=sqrt(pow(Px[p],2)+pow(Py[p],2));  //for that particular event
-            if(abs(PID[p])!=211 && abs(PID[p])!=321 && abs(PID[p])!=2212) continue;//We only need pion, proton or kaon otherwise you may skip.This was important as it had a sihnificant change in the figure .....gave the maximum near 2 where as previously it was 1
-            if ((Px[p]==0) && (Py[p]==0)) continue;
-            phi=(TMath::ATan2(Py[p],Px[p]));
-            // if (phi<0.0){         //To accomodate for inver trig anomalies
-            //    phi+=2*TMath::Pi();
-            // };
-            SinSum=SinSum +sin(2*phi);        //summation of cos and sin phi
-            CosSum=CosSum +cos(2*phi);        //?should Psi be for all the trails in the event or for the particular particle or for that particular ptbin?
-
-         };
-         // if ((SinSum==0)  (CosSum==0)) continue; //i kept these many "and if "statements cuz their was an inf/nan propagation....I fixed that now
-         double Psi=(1/2)*TMath::ATan2(SinSum,CosSum);         //for each event we calcaulate Psi
-         // if (Psi<0.0){         //To accomodate for inver trig anomalies
-         //       Psi+=2*TMath::Pi();
-         // };
-         if (Psi!=0||Psi!=-0){
-         cout<< Psi<<"\n";
-
-         };
-         // cout<< sizeof(Px)/sizeof(float_t)<<"\n";
+         // cout<<Mult<<"\n";
+         if (jentry%5000==0) cout<< floor(((jentry*1.0)/TotEvents) *100) <<"% complete \n";
+         
+         if ((Mult<lowerbc) || (Mult>higherbc)) continue;
          for (int p =0;p < Mult ;p++){
-            if(abs(PID[p])!=211 && abs(PID[p])!=321 && abs(PID[p])!=2212) continue;//We only need pion, proton or kaon otherwise you may skip....
-            if ((Px[p]==0) && (Py[p]==0)) continue;        //?Do i need this"||"?---We need  0 pt so && should suffice...It diddnt make a difference when I changed from "||" to "&&" so it should be safe to change;
-            pt=sqrt(pow(Px[p],2)+pow(Py[p],2));  //for that particular event
+
+            if(abs(PID[p])!=211 && abs(PID[p])!=321 && abs(PID[p])!=2212 ) continue;//We only need pion, proton or kaon otherwise you may skip....
+            if ((Px[p]==0) && (Py[p]==0)) continue;        //?Do I need this"||"?---We need  0 pt so && should suffice...It diddnt make a difference when I changed from "||" to "&&" so it should be safe to change;
+            pt=sqrt(pow(Px[p],2)+pow(Py[p],2));  //for that particular event        //Pt has units of GeV/c^2
             phi=(TMath::ATan2(Py[p],Px[p]));
-            // if (phi<0.0){         //To accomodate for inverse trig anomalies
-            //    phi+=2*TMath::Pi();
-            // };
-            // cout<<pt<<" ";
-            if ((pt>=Bmin)&&(pt<Bmax)){     //if the ith particle's pt belongs to the BIN    //if phi is greater than 0 ; cuz we are averaging from 0-2pi
-                  if (phi>TMath::Pi()){
-                     cout<<phi<<"\t";
-      
-                  };
-                  // cout<<"sumloop running\n";
-                  sum=sum+cos(2*(phi-Psi));               
-                  Tot++;
-            };
+            g2->Fill(pt,cos(2*(phi-Psi)));
+            g1->Fill(pt,cos(3*(phi-Psi)));
          };
 
-         // cout<<"event loop ended \n";
-      };
 
-      v2=sum/Tot;
-      // cout<<sum<<"\t"<<Tot<<"\n";
-      binarray[i]=bc;           //These arrays are used for plotting
-      v2array[i]=v2;
-      i++;
-      cout<<time.RealTime()<<"s took for bin-"<< i<<"\n";//For productive purposes
-      cout<<(BINpls-i)*time.RealTime()/60<<"m remaining  ###########################  ";
-      // cout<<bc<<" "<<v2 <<"\n";
-   };
-   // for (double i:v2array ){
-   //     cout<<bc<<" "<<v2 <<"\n";
-   // };
-   TGraph *g2= new TGraph(BINpls,binarray,v2array);
-   g2-> SetMarkerStyle(22);
-   g2->Draw("AP");
-   g2->SetTitle("v2 vs pt ;Pt;v2");
+      };
+      g1->SetTitle("Pt vs v2 and v3 for Proton, Pion and Kaon; pt; v2/v3");
+      // g2->SetTitle("Pt vs v2 and v3 for Proton, Pion and Kaon; pt; v2/v3");
+      g1-> SetMarkerStyle(23);       //TODO check if marker set style is working
+      g2-> SetMarkerStyle(26);       //TODO check if marker set style is working
+      g1->Draw();
+      g2->Draw("SAME");
+      canva->Print("lol.png");
+      
 };
 
+void check::Multiplicity(){
+   if (fChain == 0) return;
+   fChain->SetBranchAddress("Px",&Px);
+   fChain->SetBranchAddress("Py",&Py);
+   Long64_t nentries = fChain->GetEntriesFast();
+   Long64_t nbytes = 0, nb = 0;
+   int TotEvents=nentries;
+   int TotTracks=0;
+   
+   TFile *CenRegRoot=new TFile("CenRegRoot.root","recreate");
+   TH1D *pion= new TH1D("pion","Pion Multiplicity",MultBin,395,5000);   // *int maxTrack=395; int minTrack=9000;
+//######################################################################
+   for (Long64_t jentry=0; jentry<TotEvents;jentry++) { //Total events=67295
+      Long64_t ientry = LoadTree(jentry);                  //Load Tree apparently gives back the the respective possition in the tree
+      if (ientry < 0) break;
+      nb = fChain->GetEntry(jentry);   nbytes += nb;
+      int   chrgi=0;
+      TotTracks=TotTracks+Mult;                                     //Charged i entires
+      for (int p =0;p < Mult ;p++){
+         if(abs(PID[p])!=211 && abs(PID[p])!=321 && abs(PID[p])!=2212) continue;//We only need pion, proton or kaon otherwise you may skip....
+         chrgi++ ;                                    //Charged i entires
+      };
+      if (jentry%5000==0) cout<< floor(((jentry*1.0)/TotEvents) *100) <<"% complete \n";
+      pion->Fill(chrgi);//For countinf charged particles(the big 3s)
+//########################################################################
+   };
+
+   CenRegRoot->Write();
+   CenRegRoot->Close();
+
+   // pion->Draw();
+   // pion->SetLineColor(kBlue);
+   // pion->SetTitle("Pion Multiplicity;Counts(N);Multiplicity");
+   
+   
+};
+
+void check::Printer(){
+   TFile *CenRegRoot=new TFile("CenRegRoot.root","READ");
+   TH1D *pion= (TH1D*) CenRegRoot->Get("pion");
+   double_t *CenReg;
+   CenReg= pion->GetIntegral();
+
+
+	int w1=0,w2=0,w3=0,w4=0,w5=0,w6=0,w7=0,w8=0;
+   for (int i=0;i<=MultBin;i++){           //*Why is i=2; ig i is the number of bins ; This loop is to set the starting and ending bin of each centrality region(eg 0%-5%)
+		if (CenReg[i]<=1){			//The lowest if-block gets satisfied by the first bin
+			highcentral[0]=i;
+		};
+		if (CenReg[i]>0.95){
+			if (w1==0){
+				w1=1;
+				lowcentral[0]=i;
+				highcentral[1]=i;
+			};
+		};
+		if (CenReg[i]>0.9){
+			if (w2==0){
+				w2=1;
+				lowcentral[1]=i;
+				highcentral[2]=i;
+			};
+		};
+		if (CenReg[i]>0.8){
+			if (w3==0){
+				w3=1;
+				lowcentral[2]=i;
+				highcentral[3]=i;
+			};
+		};
+		if (CenReg[i]>0.7){
+			if (w4==0){
+				w4=1;
+			lowcentral[3]=i;
+			highcentral[4]=i;
+			};
+		};
+		if (CenReg[i]>0.6){
+			if (w5==0){
+				w5=1;
+				lowcentral[4]=i;
+				highcentral[5]=i;
+			};
+		};
+		if (CenReg[i]>0.5){
+			if (w6==0){
+				w6=1;
+				lowcentral[5]=i;
+				highcentral[6]=i;
+			};
+		};
+		if (CenReg[i]>0.4){
+			if (w7==0){
+				w7=1;
+				lowcentral[6]=i;
+				highcentral[7]=i;
+			};
+		};
+		if (CenReg[i]>0.2){
+			if (w8==0){
+				w8=1;
+				lowcentral[7]=i;
+			};
+		};
+	};
+   for (int i=0;i<N;i++){
+      // vector<string> canvaplotlist={"g1.png","g2.png","g3.png","g4.png","g5.png","g6.png","g7.png","g8.png"};                 //List of plot ID's to use in giving plots positions
+      double lowerbc=pion->GetBinCenter(lowcentral[i]);                                           //For a given region gives the lowest bin's bin centre(ie the total no of trails)
+      double higherbc=pion->GetBinCenter(highcentral[i]);   
+      this->Loop(lowerbc,higherbc);
+      // string lol=string(canvaplotlist[i]);
+      
+   };
+};
