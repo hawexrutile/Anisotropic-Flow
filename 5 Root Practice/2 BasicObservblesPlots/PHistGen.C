@@ -1,5 +1,18 @@
 //*Creates Histogram  for px py pz in the same pad
-{
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <TGraph.h>
+#include <TMath.h>
+#include <TLegend.h>
+#include <iostream>
+#include <fstream>
+#include <TStopwatch.h>
+#include <TProfile.h>
+#include <cmath>
+
+using namespace std;
+void PHistGen(){
     TH1D *h1=new TH1D("h1","h1",40,-2,2);
     TH1D *h2=new TH1D("h2","h2", 40, -2, 2);
     TH1D *h3=new TH1D("h3","h3", 40, -2, 2);
@@ -41,4 +54,4 @@
     legend->AddEntry("h2","py","l");
     legend->AddEntry("h3","pz","l");
     legend->Draw();
-}
+};

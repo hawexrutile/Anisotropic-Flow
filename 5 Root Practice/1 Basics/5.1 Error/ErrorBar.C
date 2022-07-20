@@ -1,4 +1,10 @@
 
+#include <TCanvas.h>
+#include <TGraphErrors.h>
+#include <fstream>
+#include <iostream>
+using namespace std;
+
 void ErrorBar(){
     TCanvas *c1=new TCanvas();
     TGraphErrors *gr= new TGraphErrors();

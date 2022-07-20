@@ -1,7 +1,7 @@
 //Double Plots
 
 {
-    c1= new TCanvas("c1","Double Plot",1000,500);
+    c1= new TCanvas("c1","Double Plot",1000,50);        //
     c1->Divide(2,1);
 
     c1->cd(1); 
