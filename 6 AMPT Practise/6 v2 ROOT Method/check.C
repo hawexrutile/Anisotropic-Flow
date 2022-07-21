@@ -1,3 +1,5 @@
+//*Code to create centrality-wise v2,v3 vs pt  distributin.
+
 #define check_cxx
 #define BINpls 10
 #include <algorithm>
@@ -13,79 +15,61 @@
 #include <cmath>
 
 
-//?Why are theri two similar trees in root file?
-using namespace std;
+//?Why are there two similar trees in root file?
+using namespace std;             //Global variables have been defined bellow for use in multiple functions
 int MultBin=50;                  //Multiplicity Bin...   Total no of bins in the centrality distribution plot
-const int N=8;
+const int N=8;                   //Total no of Centrality Regions
+
 double lowcentral[N]={0.0};
 double highcentral[N]={0.0};         //Global variable to be used i both functions
 
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ien
-void check::Loop(double lowerbc, double higherbc){
+void check::Loop(double lowerbc, double higherbc){           //ANCHOR Main loop function to calcualte and plot v2
 
    if (fChain == 0) return;
-   fChain->SetBranchAddress("Px",&Px);
-   fChain->SetBranchAddress("Py",&Py);//?wHY DIISNT WE DO THIS FOR  PID
-   Long64_t nentries = fChain->GetEntriesFast();
+   Long64_t nentries = fChain->GetEntriesFast();             //total no of events        
    Long64_t nbytes = 0, nb = 0;
-   TCanvas *canva = new TCanvas("canva","Pt vs v2 and v3 for Proton, Pion and Kaon",1000,1000);
 
-   //########################################################################
-   //########################################################################
-   
+   TCanvas *canva = new TCanvas("canva","Pt vs v2 and v3 for Proton, Pion and Kaon",1000,1000); //I made a Tcanvas cuz to use the print function
+   canva->Divide(1,1);
 
-   
-   //###########################################################################
-   //###########################################################################
-
-   // int canvasno=8;                                        //tOTAL nO OF plots
-   // string canvaplotlist[8]={"g1","g2","g3","g4","g5","g6","g7","g8"};                 //List of plot ID's to use in giving plots positions
-   // TCanvas * twntypcs=TCanvas("twntypcs","Twenty Pieces",1000,1000) ;                //To make 10 plots //?No idea why the error squigle fix it;
-   // twntypcs->Divide(5,2);
-
-   // for (int l;l<N;l++){                                       //For each Centrality Region
-
-
-      canva->Divide(1,1);
-      canva->cd(1);
-      TProfile *g2 =new TProfile("g2", "Pt vs v2 ",BINpls,0,5);
-      TProfile *g1 =new TProfile("g2", "Pt vs v3",BINpls,0,5);
-      int TotEvents=nentries;// *TotEvents is for easy adjustament of event size 
-      for (Long64_t jentry=0; jentry<TotEvents;jentry++) { //Total events=67295
-         Long64_t ientry = LoadTree(jentry);                  //Load Tree apparently gives back the the respective possition in the tree
-         if (ientry < 0) break;
-         nb = fChain->GetEntry(jentry);   nbytes += nb;       //!Loads all the variables(branches) of the ith leaf
-         // if (Cut(ientry) < 0) continue;
-         double pt;
-         double phi;
-         // cout<<Mult<<"\n";
-         if (jentry%5000==0) cout<< floor(((jentry*1.0)/TotEvents) *100) <<"% complete \n";
-         
-         if ((Mult<lowerbc) || (Mult>higherbc)) continue;
-         for (int p =0;p < Mult ;p++){
-
-            if(abs(PID[p])!=211 && abs(PID[p])!=321 && abs(PID[p])!=2212 ) continue;//We only need pion, proton or kaon otherwise you may skip....
-            if ((Px[p]==0) && (Py[p]==0)) continue;        //?Do I need this"||"?---We need  0 pt so && should suffice...It diddnt make a difference when I changed from "||" to "&&" so it should be safe to change;
-            pt=sqrt(pow(Px[p],2)+pow(Py[p],2));  //for that particular event        //Pt has units of GeV/c^2
-            phi=(TMath::ATan2(Py[p],Px[p]));
-            g2->Fill(pt,cos(2*(phi-Psi)));
-            g1->Fill(pt,cos(3*(phi-Psi)));
-         };
-
-
-      };
-      g1->SetTitle("Pt vs v2 and v3 for Proton, Pion and Kaon; pt; v2/v3");
-      // g2->SetTitle("Pt vs v2 and v3 for Proton, Pion and Kaon; pt; v2/v3");
-      g1-> SetMarkerStyle(23);       //TODO check if marker set style is working
-      g2-> SetMarkerStyle(26);       //TODO check if marker set style is working
-      g1->Draw();
-      g2->Draw("SAME");
-      canva->Print("lol.png");
+   canva->cd(1);
+   TProfile *g2 =new TProfile("g2", "Pt vs v2 ",BINpls,0,5);
+   TProfile *g1 =new TProfile("g1", "Pt vs v3",BINpls,0,5);
+   int TotEvents=nentries;                                             // *TotEvents is for easy adjustament of event size 
+   for (Long64_t jentry=0; jentry<TotEvents;jentry++) {                //Total events=67295
+      Long64_t ientry = LoadTree(jentry);                              //Load Tree apparently gives back the the respective possition in the tree
+      if (ientry < 0) break;
+      nb = fChain->GetEntry(jentry);   nbytes += nb;                   //!Loads all the variables(branches) of the ith leaf
+      // if (Cut(ientry) < 0) continue;
+      double pt;
+      double phi;
+      // cout<<Mult<<"\n";
+      if (jentry%5000==0) cout<< floor(((jentry*1.0)/TotEvents) *100) <<"% complete \n";   //*Percentage finished indicator
       
+      if ((Mult<lowerbc) || (Mult>higherbc)) continue;                      //to loop on the given centralities
+      for (int p =0;p < Mult ;p++){
+
+         if(abs(PID[p])!=211 && abs(PID[p])!=321 && abs(PID[p])!=2212 ) continue;//We only need pion, proton or kaon otherwise you may skip....
+         if ((Px[p]==0) && (Py[p]==0)) continue;        //?Do I need this"||"?---We need  0 pt so && should suffice...It diddnt make a difference when I changed from "||" to "&&" so it should be safe to change;
+         pt=sqrt(pow(Px[p],2)+pow(Py[p],2));  //for that particular event        //Pt has units of GeV/c^2
+         phi=(TMath::ATan2(Py[p],Px[p]));
+         g2->Fill(pt,cos(2*(phi-Psi)));                             //!v2
+         g1->Fill(pt,cos(3*(phi-Psi)));                             //!v3
+      };
+   };
+   g1->SetTitle("Pt vs v2 and v3 for Proton, Pion and Kaon; pt; v2/v3");
+   // g2->SetTitle("Pt vs v2 and v3 for Proton, Pion and Kaon; pt; v2/v3");
+   g1-> SetMarkerStyle(23);      
+   g2-> SetMarkerStyle(26);       
+   g1->Draw();
+   g2->Draw("SAME");
+   canva->Print("lol.png");
+   
 };
 
-void check::Multiplicity(){
+void check::Multiplicity(){                                //ANCHOR Creates a multiplicity distribution and saves the hostpgram on a root file
    if (fChain == 0) return;
    fChain->SetBranchAddress("Px",&Px);
    fChain->SetBranchAddress("Py",&Py);
@@ -114,23 +98,17 @@ void check::Multiplicity(){
 
    CenRegRoot->Write();
    CenRegRoot->Close();
-
-   // pion->Draw();
-   // pion->SetLineColor(kBlue);
-   // pion->SetTitle("Pion Multiplicity;Counts(N);Multiplicity");
-   
-   
 };
 
-void check::Printer(){
+void check::Printer(){                                           //ANCHOR uses the multiplicity distribution and runs the 4-loop on Loop() function for all centralities...
    TFile *CenRegRoot=new TFile("CenRegRoot.root","READ");
    TH1D *pion= (TH1D*) CenRegRoot->Get("pion");
    double_t *CenReg;
-   CenReg= pion->GetIntegral();
+   CenReg= pion->GetIntegral();              //?wtf does GetIntegral do
 
 
 	int w1=0,w2=0,w3=0,w4=0,w5=0,w6=0,w7=0,w8=0;
-   for (int i=0;i<=MultBin;i++){           //*Why is i=2; ig i is the number of bins ; This loop is to set the starting and ending bin of each centrality region(eg 0%-5%)
+   for (int i=0;i<=MultBin;i++){           //?Why is i=2; ig i is the number of bins ; This loop is to set the starting and ending bin of each centrality region(eg 0%-5%)
 		if (CenReg[i]<=1){			//The lowest if-block gets satisfied by the first bin
 			highcentral[0]=i;
 		};
@@ -191,10 +169,10 @@ void check::Printer(){
 		};
 	};
    for (int i=0;i<N;i++){
-      // vector<string> canvaplotlist={"g1.png","g2.png","g3.png","g4.png","g5.png","g6.png","g7.png","g8.png"};                 //List of plot ID's to use in giving plots positions
+      // vector<string> canvaplotlist={"g1.png","g2.png","g3.png","g4.png","g5.png","g6.png","g7.png","g8.png"};                 //TODO List of plot ID's to use in giving plots positions
       double lowerbc=pion->GetBinCenter(lowcentral[i]);                                           //For a given region gives the lowest bin's bin centre(ie the total no of trails)
       double higherbc=pion->GetBinCenter(highcentral[i]);   
-      this->Loop(lowerbc,higherbc);
+      this->Loop(lowerbc,higherbc);                           //For calling functions within the same class
       // string lol=string(canvaplotlist[i]);
       
    };
