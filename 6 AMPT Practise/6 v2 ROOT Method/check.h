@@ -112,7 +112,7 @@ class check {                                                                   
       virtual Int_t    GetEntry(Long64_t entry);
       virtual Long64_t LoadTree(Long64_t entry);
       virtual void     Init(TTree *tree);
-      virtual void     Loop(double lowerbc, double higherbc);
+      virtual void     Loop(int ij,TCanvas *canva );
       virtual void     Multiplicity();
       virtual void     Printer();
       virtual Bool_t   Notify();
