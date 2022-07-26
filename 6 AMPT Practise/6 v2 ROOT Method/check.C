@@ -3,9 +3,13 @@
 #include <algorithm>
 #include "check.h"
 #include <TH2.h>
+#include <TF1.h>
 #include <TStyle.h>
 #include <TCanvas.h>
 #include <TGraph.h>
+#include <TGraphErrors.h>
+#include <TLine.h>
+#include <TLegend.h>
 #include <TMath.h>
 #include <iostream>
 #include <TStopwatch.h>
@@ -25,21 +29,28 @@ double highcentral[N]={0.0};         //Global variable to be used i, both functi
 
 TFile *CenRegRoot=new TFile("CenRegRoot.root","READ");             //!
 TH1D *pion= (TH1D*) CenRegRoot->Get("pion");
-TProfile *g3 =new TProfile("g3", "Centrality vs v3",N,0,100);      
+TProfile *gcen =new TProfile("gcen", "Centrality vs v3",N,0,100);      
 
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ien
 void check::Loop(int ij,TCanvas *canva ){           //SECTION //*Main loop function to calcualte and plot v2
 
+
    if (fChain == 0) return;
    Long64_t nentries = fChain->GetEntriesFast();             //total no of events        
    Long64_t nbytes = 0, nb = 0;
    
-   canva->Divide(1,1);                                                //!
-   canva->cd(1);
+
+   double xvalue[BINpls];
+   double xvaluer[BINpls];
+   double yvalue2[BINpls];
+   double yvaluer2[BINpls];
+   double yvalue3[BINpls];
+   double yvaluer3[BINpls];
    
-   TProfile *g2 =new TProfile("g2", "v2 vs Pt  ",BINpls,0,3.5);   //!dont specidfy y range here nstead here LINK 6 AMPT Practise\6 v2 ROOT Method\check.C:79
-   TProfile *g1 =new TProfile("g1", "v3 vs Pt",BINpls,0,3.5);    //
+   TProfile *e2 =new TProfile("e2", "v2 vs Pt  ",BINpls,0,3.5);   //!dont specidfy y range here nstead here LINK 6 AMPT Practise\6 v2 ROOT Method\check.C:79
+   TProfile *e3 =new TProfile("e3", "v3 vs Pt",BINpls,0,3.5);    //
+
 
    double lowerbc=pion->GetBinCenter(lowcentral[ij]);                                           //For a given region gives the lowest bin's bin centre(ie the total no of trails)
    double higherbc=pion->GetBinCenter(highcentral[ij]);
@@ -73,25 +84,76 @@ void check::Loop(int ij,TCanvas *canva ){           //SECTION //*Main loop funct
          if ((Px[p]==0) && (Py[p]==0)) continue;        //We need  0 pt so && should suffice...It diddnt make a difference when I changed from "||" to "&&" so it should be safe to change;
          pt=sqrt(pow(Px[p],2)+pow(Py[p],2));  //for that particular event        //Pt has units of GeV/c^2
          phi=(TMath::ATan2(Py[p],Px[p]));
-         if (phi<0.0)phi+=2*TMath::Pi();
-         g2->Fill(pt,cos(2*(phi-Psi)));                             //*v2
-         g1->Fill(pt,cos(3*(phi-Psi)));                             //*v3
-         g1->GetYaxis()->SetRangeUser(-0.02, 0.3);                                //!Set Y range here
-         g2->GetYaxis()->SetRangeUser(-0.02, 0.3);                                
-         g3->Fill((ij*20)+10,cos(2*(phi-Psi)));
+         // if (phi<0.0)phi+=2*TMath::Pi();
+         e2->Fill(pt,cos(2*(phi-Psi)));                             //*v2
+         e3->Fill(pt,cos(3*(phi-Psi)));                             //*v3                         
+         gcen->Fill((ij*20)+10,cos(2*(phi-Psi)));
 
       };
    };
-   g1->SetTitle("Pt vs v2 and v3; pt; v2/v3");
-   g1-> SetMarkerStyle(23);      
-   g2-> SetMarkerStyle(26);       
-   g3-> SetMarkerStyle(26);       
-   g1->Draw();
-   g2->Draw("SAME");
+
+   e2->GetYaxis()->SetRangeUser(-0.02, 0.3);       
+   e3->GetYaxis()->SetRangeUser(-0.02, 0.3);                                //!Set Y range here
+   for (int ji=0;ji<=10;ji++){
+      xvalue[ji]=e3->GetBinCenter(ji);
+      xvaluer[ji]=0;
+      yvalue2[ji]=e2->GetBinContent(ji);
+      yvaluer2[ji]=e2->GetBinError(ji);
+      yvalue3[ji]=e3->GetBinContent(ji);
+      yvaluer3[ji]=e3->GetBinError(ji);
+   };
+
+   TGraphErrors *g2 =new TGraphErrors(BINpls,xvalue,yvalue2,xvaluer,yvaluer2);   //!dont specidfy y range here nstead here LINK 6 AMPT Practise\6 v2 ROOT Method\check.C:79
+   TGraphErrors *g3 =new TGraphErrors(BINpls,xvalue,yvalue3,xvaluer,yvaluer3);    
+   TF1 *fit2= new TF1("fit","pol2",0,3.0);
+   TF1 *fit3= new TF1("fit","pol2",0,3.0);
+   fit2->SetParNames("a","b","c");
+   fit2->SetLineWidth(3);               //fit-line thickness
+   fit2->SetLineColor(kBlue+3);               //fit-line thickness
+   fit2->SetLineStyle(1);               //1-solid ; 2- dotted
+   fit3->SetParNames("a","b","c");
+   fit3->SetLineWidth(3);               //fit-line thickness
+   fit3->SetLineColor(kMagenta+3);               //fit-line thickness
+   fit3->SetLineStyle(1);               //1-solid ; 2- dotted
+
+   g2->GetXaxis()->SetRangeUser(0, 3.5); 
+   g2->GetYaxis()->SetRangeUser(-0.1, 0.35);   
+   g2-> SetMarkerStyle(47);       
+   g2-> SetMarkerSize(3);      
+   g2->Draw("AP ");
+   g2->Fit(fit2,"R");
+   g2->SetTitle(0);
+
+   g3->GetXaxis()->SetRangeUser(0, 3.5); 
+   g3->GetYaxis()->SetRangeUser(-0.1, 0.35);                                //!Set Y range here
+   g3-> SetMarkerStyle(46);      
+   g3-> SetMarkerSize(3);      
+   g2->SetTitle("Pt vs v2 and v3; pt; v2,v3");
+   g3->Draw("P SAME");
+   g3->Fit(fit3,"R");
+   g3->SetTitle(0);
+
+
+   TLine *linex=new TLine(0,0,3.3,0);                    //Cordinate (x1,y1,x2,y2)
+   linex->SetLineWidth(5);
+   linex->SetLineColor(kBlack);
+   linex->Draw();
+   TLine *liney=new TLine(0,-0.1,0,0.4);                    //Cordinate (x1,y1,x2,y2)
+   liney->SetLineWidth(5);
+   liney->SetLineColor(kBlack);
+   liney->Draw();
+
+   TLegend *leg=new TLegend(0.55,0.65,0.85,0.85);            //Consider the canvas as an cordinate region withe the top right corner as 1,1 and bottom left corner as 0,0;Cordinate (x1,y1,x2,y2)  
+   leg->SetBorderSize(0);                                 //sets the margin to 0
+   leg->AddEntry(g2,"v2","p");               //L IS FOR LINE; F OR FILLING ; P FOR POINT
+   leg->AddEntry(g3,"v3","p");               //L IS FOR LINE; F OR FILLING ; P FOR POINT
+   leg->AddEntry(fit2,"v2 polinomial fit","l");
+   leg->AddEntry(fit3,"v3 polinomial fit","l");
+   leg->Draw();
 
 };
 
-void check::Multiplicity(){                                //ANCHOR Creates a multiplicity distribution and saves the hostpgram on a root file
+void check::Multiplicity(){                                //SECTION Creates a multiplicity distribution and saves the hostpgram on a root file
    if (fChain == 0) return;
    fChain->SetBranchAddress("Px",&Px);
    fChain->SetBranchAddress("Py",&Py);
@@ -122,7 +184,7 @@ void check::Multiplicity(){                                //ANCHOR Creates a mu
    CenRegRoot->Close();
 };
 
-void check::Printer(){                                           //ANCHOR uses the multiplicity distribution and runs the 4-loop on Loop() function for all centralities...
+void check::Printer(){                                           //SECTION uses the multiplicity distribution and runs the 4-loop on Loop() function for all centralities...
 
    double_t *CenReg;
    CenReg= pion->GetIntegral();              //!cumulative sum of bins ...The resulting integral is normalized to 1
@@ -177,67 +239,46 @@ void check::Printer(){                                           //ANCHOR uses t
 		};
 	};
 
-   for (int i=0;i<N;i++){ 
-      // cout <<lowcentral[i]<< "\t"<<highcentral[i]<<"\t"<<"\n";
-                                  //*For ploting all the plots  
-      TCanvas *canva = new TCanvas("canva","Pt vs v2 and v3 for Proton, Pion and Kaon",1000,1000); //I made a Tcanvas cuz to use the print function
-      if (i==0){
-
-         this->Loop(i,canva);
-                        //For calling functions within the same class
-         canva->Print("./Plot/g0.png");        //TODO remove memory leak warning
-         if (canva){ 
-            canva->Close(); 
-            gSystem->ProcessEvents(); 
-            delete canva; 
-            canva = 0; 
-         };
-         
-      }      
-      else if (i==1){
-
-         this->Loop(i,canva);                           //For calling functions within the same class
-         canva->Print("./Plot/g1.png");        //!
-         if (canva){ 
-            canva->Close(); 
-            gSystem->ProcessEvents(); 
-            delete canva; 
-            canva = 0; 
-         };
-      } 
-      else if (i==2){ 
-         this->Loop(i,canva);                           //For calling functions within the same class
-         canva->Print("./Plot/g2.png");        //!
-         if (canva){ 
-            canva->Close(); 
-            gSystem->ProcessEvents(); 
-            delete canva; 
-            canva = 0; 
-         };
-      }      
-      else if (i==3){  
-         this->Loop(i,canva);                           //For calling functions within the same class
-         canva->Print("./Plot/g3.png");        //!
-         if (canva){ 
-            canva->Close(); 
-            gSystem->ProcessEvents(); 
-            delete canva; 
-            canva = 0; 
-         };
-      }      
-      else {
-         this->Loop(i,canva);                           //For calling functions within the same class
-         canva->Print("./Plot/g4.png");        //!
-         g3->SetTitle("Centrality vs v2; Centrality; v2");
-         g3->Draw();
-         canva->Print("./Plot/Centvsv2.png");      //TODO do we need to close; does it rewrite files
-         if (canva){ 
-            canva->Close(); 
-            gSystem->ProcessEvents(); 
-            delete canva; 
-            canva = 0; 
-         };
-      } ;       
+   for (int i=0;i<N;i++){                                             //*For ploting all the plots  
+      TCanvas *canva = new TCanvas("canva","Pt vs v2 and v3 for Proton, Pion and Kaon",1500,1000); //I made a Tcanvas cuz to use the print function  //dontuse TCanvas::Divide its harder to bring grid
+      gPad->SetTickx();                     //covers the axis above the x axis with "scale"
+      gPad->SetTicky();                     //covers the axis beside the y axis with "scale"  
+      gPad->SetGridy();
+      gPad->SetGridx();
+      // canva->SetTickx();                     //covers the axis above the x axis with "scale"
+      // canva->SetTicky();                     //covers the axis beside the y axis with "scale"  
+      // canva->SetGridy();
+      // canva->SetGridx();
+      this->Loop(i,canva);                                          //For calling functions within the same class
+      canva->Print(Form("./Plot/g%d.png",i));           //TODO remove memory leak warning
+      if (canva){ 
+         canva->Close(); 
+         gSystem->ProcessEvents(); 
+         delete canva; 
+         canva = 0; 
+      };
    };
+   TCanvas *canvacen = new TCanvas("canvacen","v2 vs Centrality for  Proton, Pion and Kaon",1500,1000);
+   TF1 *fitcen= new TF1("fitcen","pol2",0,100);
+   fitcen->SetLineWidth(5);                   //fit-line thickness
+   fitcen->SetLineColor(kBlue);                   //fit-line thickness
+   fitcen->SetLineStyle(3);
+   gcen->SetStats(0);  
+   canvacen->SetTickx();                     //covers the axis above the x axis with "scale"
+   canvacen->SetTicky();                     //covers the axis beside the y axis with "scale"  
+   canvacen->SetGridy();
+   canvacen->SetGridx();
+   gcen->GetYaxis()->SetRangeUser(0, 0.1);   
+   gcen-> SetMarkerStyle(47);
+   gcen->Fit("fitcen","R");  
+   gcen-> SetMarkerSize(3); 
+   gcen->SetTitle("v2 vs Centrality; Centrality; v2");
+   gcen->Draw();
+   TLegend *legcen=new TLegend(0.55,0.65,0.85,0.85);            //Consider the canvas as an cordinate region withe the top right corner as 1,1 and bottom left corner as 0,0;Cordinate (x1,y1,x2,y2)  
+   legcen->SetBorderSize(0);                                 //sets the margin to 0
+   legcen->AddEntry(gcen,"v2","p");               //L IS FOR LINE; F OR FILLING ; P FOR POINT
+   legcen->AddEntry(fitcen,"v2 polinomial fit","l");
+   legcen->Draw();
+   canvacen->Print("./Plot/gcen.png"); 
 
 };
