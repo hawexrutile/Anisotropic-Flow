@@ -124,7 +124,7 @@ void lister(string datfilename,int pid){                    //*ANCHOR Lister is 
             ss>> testno;                    //This "if block" makes lister skip over that particular line 
             ss>>trailno;
             i=i+stoi(trailno);              //i is used in the if statement to read the header of each event
-            listtrail.push_back(i);
+            listtrail.push_back(i);         //I fig, we needed to keep track at which trail each evetn starts
 
         }
         else {
@@ -191,24 +191,24 @@ map<int,int> pcounter(vector<int> idlist){                  //*ANCHOR for counti
 };
 
 
-// int main(){
+ int main(){
 //     int sum;
-//    extractor("ampt.dat");
-    //  lister("ampt.dat",99);
-    // map<int,int> lol=pcounter(listid);
-    // cout << "\nKEY   ELEMENT\n";
-    // for(auto x: lol){
-	// cout << x.first << "-->" <<x.second <<endl;
-    // sum=sum+x.second;
-    // };
-    // cout<<"no of elems:\t"<< sum<<"\n";
-    // return 0;
+// //    extractor("ampt.dat");
+     lister("ampt.dat",99);
+//     // map<int,int> lol=pcounter(listid);
+//     // cout << "\nKEY   ELEMENT\n";
+//     // for(auto x: lol){
+// 	// cout << x.first << "-->" <<x.second <<endl;
+//     // sum=sum+x.second;
+//     // };
+//     // cout<<"no of elems:\t"<< sum<<"\n";
+//     // return 0;
 //     int g=0;    
 //      for (double l : listyi){
 //         g++;
 //      }
 //      cout<< g <<"\t";
-// };
+ };
 
 
 
