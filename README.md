@@ -12,11 +12,11 @@
   <img align="left" alt="Abhishek's LinkedIN" width="22px" src="https://raw.githubusercontent.com/peterthehan/peterthehan/master/assets/linkedin.svg" />
 </a>
 
-![](https://visitor-badge.glitch.me/badge?page_id=abhisheknaiidu.abhisheknaiidu)
+![](https://visitor-badge.glitch.me/badge?page_id=hawexrutile.hawexrutile)
 
 <br />
 
-Hi, I'm [Alan Biju John](https://hawexrutile.github.io/Portfolio/main/index.html/).I am a high-energy physics enthusiast. I love learning about QGP and diving deeper into the hot mess it creates😉.
+Hi, I'm [Alan Biju John](https://hawexrutile.github.io/Portfolio/main/index.html).I am a high-energy physics enthusiast. I love learning about QGP and diving deeper into the hot mess it creates😉.
 This is the first project where I used ROOT. Hope You like it. In this project, I try calculating anisotropic flow coefficients using the AMPT model and plot them against centrality. Results have been included.
 
   <img align="right" alt="GIF" src="https://github.com/abhisheknaiidu/abhisheknaiidu/blob/master/code.gif?raw=true" width="500" height="320" />
