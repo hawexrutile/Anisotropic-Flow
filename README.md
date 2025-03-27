@@ -1,4 +1,5 @@
-### hey there 
+### hey there
+<!--
 <a href="https://www.instagram.com/hawexrutile/">
   <img align="left" alt="Abhishek's Instagram" width="22px" src="https://raw.githubusercontent.com/hussainweb/hussainweb/main/icons/instagram.png" />
 </a>
@@ -11,7 +12,7 @@
 <a href="https://www.linkedin.com/in/hawexrutile/">
   <img align="left" alt="Abhishek's LinkedIN" width="22px" src="https://raw.githubusercontent.com/peterthehan/peterthehan/master/assets/linkedin.svg" />
 </a>
-
+-->
 ![](https://visitor-badge.glitch.me/badge?page_id=hawexrutile.hawexrutile)
 
 <br />
