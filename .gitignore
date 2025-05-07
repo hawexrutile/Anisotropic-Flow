@@ -1,5 +1,6 @@
 #non essential folder; "/" implies "in each subfolder"  
 .vscode/
+Events/
 
 #c++ executable file "*-wild card" implies for all file names ending with exe
 *.exe
